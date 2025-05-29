@@ -42,6 +42,10 @@ builder.Services.AddScoped<ICurrentUserService,CurrentService>();
 builder.Services.AddScoped<ICommonService<PostDto, Guid, PostInsertDto, PostUpdateDto>, PostService>();
 builder.Services.AddScoped<ISurveyService<SurveyDto, SurveyInsertDto, UserFieldSurveyDto, UserFieldInsertSurveyDto>,SurveyService>();
 builder.Services.AddScoped<FileService>();
+builder.Services.AddMercadoPago(builder.Configuration);
+builder.Services.AddScoped<IPaymentService, PaymentService>();
+
+
 
 //validators
 builder.Services.AddScoped<IValidator<PostInsertDto>, PostInsertValidator>();
