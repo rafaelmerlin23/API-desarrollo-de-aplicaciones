@@ -1,6 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using foroLIS_backend.DTOs.PostDtos;
+using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using foroLIS_backend.DTOs.PostDtos;
 
 namespace foroLIS_backend.Models
 {
@@ -12,6 +13,9 @@ namespace foroLIS_backend.Models
         [MaxLength(100)]
         public string Title { get; set; }
         public string Content { get; set; }
+        
+        [Precision(18, 2)]
+        public Decimal? Goal { get; set; }
         public string UserId { get; set; }
         [ForeignKey("UserId")]
         public virtual Users User { get; set; }
@@ -43,6 +47,7 @@ namespace foroLIS_backend.Models
                 FamilyOS = post.FamilyOS,
                 UpdateAt = post.UpdateAt,
                 VersionOS = post.VersionOS,
+                Goal = post.Goal,
             };
         }
         public static Post InsertDtoToPost(PostInsertDto dto,string userId)
@@ -56,6 +61,7 @@ namespace foroLIS_backend.Models
                 FamilyOS = dto.FamilyOS,
                 VersionOS = dto.VersionOS,
                 CreateAt = dto.CreateAt,
+                Goal = dto.Goal
             };
         }
         

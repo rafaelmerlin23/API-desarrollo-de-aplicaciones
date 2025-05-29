@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using foroLIS_backend.Infrastructure.Context;
 
@@ -11,9 +12,11 @@ using foroLIS_backend.Infrastructure.Context;
 namespace foroLIS_backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250528214725_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -203,59 +206,6 @@ namespace foroLIS_backend.Migrations
                     b.ToTable("Comments");
                 });
 
-            modelBuilder.Entity("foroLIS_backend.Models.Donation", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<decimal>("Amount")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Currency")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DateApproved")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DonorId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("PaymentId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ReceiverId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StatusDetail")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DonorId");
-
-                    b.HasIndex("ReceiverId");
-
-                    b.ToTable("Donations");
-                });
-
             modelBuilder.Entity("foroLIS_backend.Models.FieldSurvey", b =>
                 {
                     b.Property<Guid>("Id")
@@ -371,10 +321,6 @@ namespace foroLIS_backend.Migrations
                         .IsRequired()
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
-
-                    b.Property<decimal?>("Goal")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -574,6 +520,9 @@ namespace foroLIS_backend.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("StripeAccountId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Theme")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -677,25 +626,6 @@ namespace foroLIS_backend.Migrations
                     b.Navigation("Post");
 
                     b.Navigation("Users");
-                });
-
-            modelBuilder.Entity("foroLIS_backend.Models.Donation", b =>
-                {
-                    b.HasOne("foroLIS_backend.Models.Users", "Donor")
-                        .WithMany()
-                        .HasForeignKey("DonorId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("foroLIS_backend.Models.Users", "Receiver")
-                        .WithMany()
-                        .HasForeignKey("ReceiverId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Donor");
-
-                    b.Navigation("Receiver");
                 });
 
             modelBuilder.Entity("foroLIS_backend.Models.FieldSurvey", b =>

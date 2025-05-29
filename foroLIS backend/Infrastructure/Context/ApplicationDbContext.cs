@@ -1,6 +1,7 @@
 ﻿using foroLIS_backend.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 
 namespace foroLIS_backend.Infrastructure.Context
 {
@@ -18,6 +19,7 @@ namespace foroLIS_backend.Infrastructure.Context
         public DbSet<Mention> Mentions { get; set; }
         public DbSet<MediaFile> MediaFiles { get; set; }
         public DbSet<FilePost> FilePosts { get; set; }
+        public DbSet<Donation> Donations { get; set; }
 
         
         protected override void OnModelCreating(ModelBuilder builder)
@@ -88,6 +90,18 @@ namespace foroLIS_backend.Infrastructure.Context
                 .WithMany(u => u.Reactions)
                 .HasForeignKey(r => r.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
+
+            builder.Entity<Donation>()
+                .HasOne(d => d.Donor)
+                .WithMany()
+                .HasForeignKey(d => d.DonorId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Donation>()
+                .HasOne(d => d.Receiver)
+                .WithMany()
+                .HasForeignKey(d => d.ReceiverId)
+                .OnDelete(DeleteBehavior.Restrict);
 
 
             base.OnModelCreating(builder);

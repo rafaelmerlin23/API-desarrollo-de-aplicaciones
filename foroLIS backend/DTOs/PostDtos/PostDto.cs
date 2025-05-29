@@ -7,12 +7,13 @@ namespace foroLIS_backend.DTOs.PostDtos
     {
         public Guid Id { get; set; }
         public string Title { get; set; }
-
+        public Decimal? Goal { get; set; }
         public UserPostDto user {  get; set; }
         public string Content { get; set; }
         public string UserId { get; set; }
         public string ArchitectureOS { get; set; }
         public string FamilyOS { get; set; }
+        public Decimal collected {  get; set; }
         public string VersionOS { get; set; }
         public DateTime CreateAt { get; set; }
         public DateTime? UpdateAt { get; set; }
