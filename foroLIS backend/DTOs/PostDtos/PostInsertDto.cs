@@ -2,6 +2,7 @@
 {
     public class PostInsertDto
     {
+        public Decimal? Goal { get; set; }
         public string Title { get; set; }
         public string Content { get; set; }
         public string ArchitectureOS { get; set; }
