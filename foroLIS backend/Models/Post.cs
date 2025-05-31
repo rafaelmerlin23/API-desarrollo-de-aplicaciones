@@ -32,7 +32,7 @@ namespace foroLIS_backend.Models
         public ICollection<UserHistorial> UserHistorials { get; set; }
         public ICollection<Reaction> Reactions { get; set; }
         public ICollection<Survey> Surveries { get; set; }
-
+        public ICollection<CommunityMessage> CommunityMessages { get; set; }
         public static PostDto postToPostDto(Post post)
         {
             

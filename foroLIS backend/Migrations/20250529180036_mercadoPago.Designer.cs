@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using foroLIS_backend.Infrastructure.Context;
 
@@ -11,9 +12,11 @@ using foroLIS_backend.Infrastructure.Context;
 namespace foroLIS_backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250529180036_mercadoPago")]
+    partial class mercadoPago
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -203,35 +206,6 @@ namespace foroLIS_backend.Migrations
                     b.ToTable("Comments");
                 });
 
-            modelBuilder.Entity("foroLIS_backend.Models.CommunityMessage", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("Fecha")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("PostId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Texto")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PostId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("CommunityMessages");
-                });
-
             modelBuilder.Entity("foroLIS_backend.Models.Donation", b =>
                 {
                     b.Property<Guid>("Id")
@@ -264,9 +238,6 @@ namespace foroLIS_backend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("PostId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("ReceiverId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -282,8 +253,6 @@ namespace foroLIS_backend.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("DonorId");
-
-                    b.HasIndex("PostId");
 
                     b.HasIndex("ReceiverId");
 
@@ -719,37 +688,12 @@ namespace foroLIS_backend.Migrations
                     b.Navigation("Users");
                 });
 
-            modelBuilder.Entity("foroLIS_backend.Models.CommunityMessage", b =>
-                {
-                    b.HasOne("foroLIS_backend.Models.Post", "Post")
-                        .WithMany("CommunityMessages")
-                        .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("foroLIS_backend.Models.Users", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Post");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("foroLIS_backend.Models.Donation", b =>
                 {
                     b.HasOne("foroLIS_backend.Models.Users", "Donor")
                         .WithMany()
                         .HasForeignKey("DonorId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("foroLIS_backend.Models.Post", "Post")
-                        .WithMany()
-                        .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("foroLIS_backend.Models.Users", "Receiver")
@@ -759,8 +703,6 @@ namespace foroLIS_backend.Migrations
                         .IsRequired();
 
                     b.Navigation("Donor");
-
-                    b.Navigation("Post");
 
                     b.Navigation("Receiver");
                 });
@@ -909,8 +851,6 @@ namespace foroLIS_backend.Migrations
             modelBuilder.Entity("foroLIS_backend.Models.Post", b =>
                 {
                     b.Navigation("Comments");
-
-                    b.Navigation("CommunityMessages");
 
                     b.Navigation("Reactions");
 

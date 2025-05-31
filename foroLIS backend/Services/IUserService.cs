@@ -8,7 +8,7 @@ namespace foroLIS_backend.Services
         Task<CurrentUserResponseDto> GetCurrentUserAsync();
         Task<UserResponseDto> GoogleLoginAsync(UserRegisterRequestDto request);
         Task<UserResponseDto> GetByIdAsync(string id);
-        Task<UserResponseDto> UpdateAsync(string id, UpdateUserDto request);
+        Task<UserResponseDto> UpdateAsync(UpdateUserDto request);
         Task DeleteAsync(string id);
         Task<RevokeRefreshTokenResponseDto> RevokeRefreshToken(RefreshTokenRequestDto refreshTokenRemoveRequest);
         Task<CurrentUserResponseDto> RefreshTokenAsync(RefreshTokenRequestDto request);

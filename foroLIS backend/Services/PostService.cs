@@ -68,6 +68,7 @@ namespace foroLIS_backend.Services
             }
             post.Content = postUpdateDto.Content ?? post.Content;
             post.Title = postUpdateDto.Title ?? post.Title;
+            post.Goal = postUpdateDto.Goal ?? post.Goal;
             post.UpdateAt = DateTime.Now;
             _repository.Update(post);
             await _repository.Save();

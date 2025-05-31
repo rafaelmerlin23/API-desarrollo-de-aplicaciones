@@ -1,0 +1,49 @@
+﻿@page "/donate"
+@inject HttpClient Http
+
+<h3>Donar</h3>
+
+<div>
+    <label>Monto:</label>
+    <input type="number" @bind="amount" />
+</div>
+<div>
+    <label>Token (simulado):</label>
+    <input type="text" @bind="token" />
+</div>
+<div>
+    <label>Receptor ID:</label>
+    <input type="text" @bind="receiverId" />
+</div>
+<button @onclick="MakeDonation">Donar</button>
+
+<p>@message</p>
+
+@code {
+    private decimal amount = 100;
+    private string token = "";
+    private string receiverId = "";
+    private string message = "";
+
+    private async Task MakeDonation()
+    {
+        var result = await Http.PostAsJsonAsync("/api/payments", new
+        {
+            amount,
+            token,
+            paymentMethodId = "visa",
+            installments = 1,
+            description = "Donación desde Blazor",
+            receiverId
+        });
+
+        if (result.IsSuccessStatusCode)
+        {
+            message = "Donación exitosa";
+        }
+        else
+        {
+            message = "Error en la donación";
+        }
+    }
+}

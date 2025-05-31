@@ -1,0 +1,25 @@
+﻿@page "/authorize"
+@using Microsoft.AspNetCore.WebUtilities
+@inject NavigationManager Nav
+@inject HttpClient Http
+
+<p>Autorizando...</p>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        var uri = Nav.ToAbsoluteUri(Nav.Uri);
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("code", out var code))
+        {
+            var response = await Http.PostAsJsonAsync("/api/payments/authorize", new { code = code.ToString() });
+            if (response.IsSuccessStatusCode)
+            {
+                Nav.NavigateTo("/donate");
+            }
+            else
+            {
+                Console.WriteLine("Error al autorizar");
+            }
+        }
+    }
+}

@@ -232,10 +232,10 @@ namespace foroLIS_backend.Services
             }
         }
 
-        public async Task<UserResponseDto> UpdateAsync(string id, UpdateUserDto request)
+        public async Task<UserResponseDto> UpdateAsync( UpdateUserDto request)
         {
-            var user = await _userManager.FindByIdAsync(id);
-            if(user == null)
+            var user = await _userManager.FindByIdAsync(_currentUserService.GetUserId());
+            if (user == null)
             {
                 _logger.LogError("User not found");
                 throw new Exception("User not found");
@@ -246,7 +246,8 @@ namespace foroLIS_backend.Services
             user.FirstName = request?.FirstName ?? user.FirstName;
             user.Theme = request?.Theme ?? user.Theme;
             user.Language = request?.Language ?? user.Language;
-
+            user.MercadoPagoUserId = request?.MercadoPagoUserId ?? user.MercadoPagoUserId;
+            user.MercadoPagoAccessToken = request?.mercadoPagoAccessToken ?? user.MercadoPagoAccessToken;
             await _userManager.UpdateAsync(user);
             return Users.UsersToUsersResponseDto(user);
         }

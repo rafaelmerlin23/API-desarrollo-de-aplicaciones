@@ -57,6 +57,8 @@ namespace foroLIS_backend.Repository
                     VersionOS = post.VersionOS,
                     UserId = post.UserId,
                     Content = post.Content,
+                    Goal = post.Goal,
+                    collected = _context.Donations.Where(d=> d.PostId == post.Id).Sum(d => d.Amount),
                     CreateAt = DateTime.Now,
                     FamilyOS = post.FamilyOS,
                     user = new UserPostDto()
@@ -138,6 +140,8 @@ namespace foroLIS_backend.Repository
                  {
                      ArchitectureOS = post.ArchitectureOS,
                      Title = post.Title,
+                     Goal =post.Goal,
+                     collected = _context.Donations.Where(d => d.PostId == post.Id).Sum(d => d.Amount),
                      UpdateAt = post.UpdateAt,
                      VersionOS = post.VersionOS,
                      UserId = post.UserId,

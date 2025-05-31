@@ -1,25 +1,39 @@
-﻿namespace foroLIS_backend.Controllers;
-
-// Controllers/PaymentsController.cs
+﻿using foroLIS_backend.DTOs;
+using foroLIS_backend.Models;
+using foroLIS_backend.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using DTOs;
-using Services;
 
-[ApiController]
-[Route("api/[controller]")]
-public class PaymentsController : ControllerBase
+namespace foroLIS_backend.Controllers
 {
-    private readonly IPaymentService _paymentService;
-
-    public PaymentsController(IPaymentService paymentService)
+    [ApiController]
+    [Route("api/[controller]")]
+    public class PaymentsController : ControllerBase
     {
-        _paymentService = paymentService;
-    }
+        private readonly IPaymentService _paymentService;
+        private readonly UserManager<Users> _userManager;
+        private readonly ICurrentUserService _currentUserService;
 
-    [HttpPost]
-    public async Task<IActionResult> CreatePayment([FromBody] CreatePaymentDTO dto)
-    {
-        var result = await _paymentService.CreatePaymentAsync(dto);
-        return Ok(new { status = result });
+        public PaymentsController(
+            IPaymentService paymentService,
+            UserManager<Users> userManager,
+            ICurrentUserService currentUserService)
+        {
+            _paymentService = paymentService;
+            _userManager = userManager;
+            _currentUserService = currentUserService;
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> CreatePayment([FromBody] CreatePaymentDTO dto)
+        {
+            var result = await _paymentService.CreatePaymentAsync(dto);
+            return Ok(new { status = result });
+        }
+
+ 
+
     }
 }
