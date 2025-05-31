@@ -1,10 +1,12 @@
-using Xunit;
-using Moq;
-using foroLIS_backend.Services;
-using foroLIS_backend.DTOs;
 using foroLIS_backend.Controllers;
+using foroLIS_backend.DTOs;
+using foroLIS_backend.Models;
+using foroLIS_backend.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
 using System.Threading.Tasks;
+using Xunit;
 
 namespace ForoLIS.Tests
 {
@@ -15,6 +17,12 @@ namespace ForoLIS.Tests
         {
             // Arrange
             var mockService = new Mock<IPaymentService>();
+            var mockUserManager = new Mock<UserManager<Users>>(
+                new Mock<IUserStore<Users>>().Object,
+                null, null, null, null, null, null, null, null
+            );
+            var mockCurrentUser = new Mock<ICurrentUserService>();
+
             var expectedStatus = "approved";
 
             var dto = new CreatePaymentDTO
@@ -29,18 +37,21 @@ namespace ForoLIS.Tests
             mockService.Setup(s => s.CreatePaymentAsync(dto))
                 .ReturnsAsync(expectedStatus);
 
-            var controller = new PaymentsController(mockService.Object);
+            var controller = new PaymentsController(
+                mockService.Object,
+                mockUserManager.Object,
+                mockCurrentUser.Object
+            );
 
             // Act
-            var result = await controller.CreatePayment(dto) as OkObjectResult;
+            var result = await controller.CreatePayment(dto);
 
             // Assert
-            Assert.NotNull(result);
-            Assert.Equal(200, result.StatusCode);
-
-            dynamic value = result.Value;
-            Assert.Equal(expectedStatus, value.status);
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            dynamic value = okResult.Value;
+            Assert.Equal(expectedStatus, (string)value.status);
         }
+
     }
 }
 

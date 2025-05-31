@@ -20,6 +20,7 @@ namespace foroLIS_backend.Infrastructure.Context
         public DbSet<MediaFile> MediaFiles { get; set; }
         public DbSet<FilePost> FilePosts { get; set; }
         public DbSet<Donation> Donations { get; set; }
+        public DbSet<CommunityMessage> CommunityMessages { get; set; }
 
         
         protected override void OnModelCreating(ModelBuilder builder)
@@ -81,10 +82,10 @@ namespace foroLIS_backend.Infrastructure.Context
                 .HasForeignKey(r => r.PostId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
             builder.Entity<Reaction>()
-              .HasOne(r => r.Comment)
-              .WithMany(c => c.Reactions)
-              .HasForeignKey(r => r.CommentId)
-              .OnDelete(DeleteBehavior.ClientSetNull);
+                .HasOne(r => r.Comment)
+                .WithMany(c => c.Reactions)
+                .HasForeignKey(r => r.CommentId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
             builder.Entity<Reaction>()
                 .HasOne(r => r.Users)
                 .WithMany(u => u.Reactions)
@@ -102,6 +103,12 @@ namespace foroLIS_backend.Infrastructure.Context
                 .WithMany()
                 .HasForeignKey(d => d.ReceiverId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<CommunityMessage>()
+                .HasOne(m => m.Post)
+                .WithMany(p => p.CommunityMessages)
+                .HasForeignKey(m => m.PostId)
+                .OnDelete(DeleteBehavior.Restrict); 
 
 
             base.OnModelCreating(builder);

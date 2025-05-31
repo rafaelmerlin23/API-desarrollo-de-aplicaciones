@@ -1,29 +1,77 @@
 ﻿namespace foroLIS_backend.Services;
 
-using MercadoPago.Client.Payment;
-using MercadoPago.Resource.Payment;
 using DTOs;
+using foroLIS_backend.Models;
+using MercadoPago.Client.Payment;
+using MercadoPago.Config;
+using MercadoPago.Resource.Payment;
+using Microsoft.AspNetCore.Identity;
 
 public class PaymentService : IPaymentService
 {
+    private readonly ICurrentUserService _currentUserService;
+    private readonly UserManager<Users> _userManager;
+    private readonly DonationService _donationService;
+    public PaymentService(
+         ICurrentUserService currentUserService
+       , UserManager<Users> userManager,DonationService donationService)
+    {
+        this._currentUserService = currentUserService;
+        this._userManager = userManager;
+        _donationService = donationService;
+    }
+
     public async Task<string> CreatePaymentAsync(CreatePaymentDTO dto)
     {
+        var receiver = await _userManager.FindByIdAsync(dto.ReceiverId);
+
+        var currentUserId = _currentUserService.GetUserId();
+        var donor = await _userManager.FindByIdAsync(currentUserId);
+
+        if (receiver == null || string.IsNullOrWhiteSpace(receiver.MercadoPagoAccessToken))
+        {
+            throw new Exception("El receptor no tiene cuenta de Mercado Pago configurada.");
+        }
+
+        if (donor == null)
+        {
+            throw new Exception("Usuario autenticado no encontrado.");
+        }
+
+        MercadoPagoConfig.AccessToken = receiver.MercadoPagoAccessToken;
+
         var paymentRequest = new PaymentCreateRequest
         {
             TransactionAmount = dto.Amount,
             Token = dto.Token,
-            Description = "Compra en el sitio",
+            Description = dto.Description ?? "Donación",
             Installments = dto.Installments,
             PaymentMethodId = dto.PaymentMethodId,
             Payer = new PaymentPayerRequest
             {
-                Email = dto.Email
+                Email = donor.Email // Usamos el email del usuario autenticado
             }
         };
 
         var client = new PaymentClient();
         Payment payment = await client.CreateAsync(paymentRequest);
 
+        var donation = new Donation
+        {
+            DonorId = donor.Id,
+            ReceiverId = dto.ReceiverId,
+            Amount = dto.Amount,
+            PaymentId = payment.Id.ToString(),
+            Status = payment.Status,
+            StatusDetail = payment.StatusDetail,
+            Description = dto.Description ?? "Donación",
+            Currency = payment.CurrencyId,
+            DateApproved = payment.Status == "approved" ? DateTime.Now : null,
+            PostId = dto.PostId,
+        };
+
+        await _donationService.Add(donation);
         return payment.StatusDetail;
     }
+
 }

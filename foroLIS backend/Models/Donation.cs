@@ -15,6 +15,9 @@ namespace foroLIS_backend.Models
         public string ReceiverId { get; set; }
         [ForeignKey("ReceiverId")]
         public virtual Users Receiver { get; set; }
+        public Guid PostId { get; set; }
+        [ForeignKey("PostId")]
+        public virtual Post Post { get; set; }
         [Precision(18, 2)]
         public Decimal Amount { get; set; }
 

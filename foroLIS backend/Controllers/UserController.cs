@@ -39,6 +39,7 @@ namespace foroLIS_backend.Controllers
             }
         }
 
+
         [AllowAnonymous]
         [HttpPost("login")]
         public async Task<ActionResult<UserResponseDto>> Login(UserRegisterRequestDto userRegisterRequestDto)
@@ -89,5 +90,21 @@ namespace foroLIS_backend.Controllers
                 return Conflict(ex.Message);
             }
         }
+
+        [HttpPut]
+        [Authorize]
+        public async Task<ActionResult<UserResponseDto>> UpdateUser([FromBody] UpdateUserDto request)
+        {
+            try
+            {
+                var updatedUser = await _userService.UpdateAsync(request);
+                return Ok(updatedUser);
+            }
+            catch (Exception ex)
+            {
+                return Conflict(ex.Message);
+            }
+        }
+
     }
 }

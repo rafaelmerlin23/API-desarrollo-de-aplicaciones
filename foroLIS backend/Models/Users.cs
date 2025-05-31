@@ -25,6 +25,8 @@ namespace foroLIS_backend.Models
         public string? VersionOS { get; set; }
         public string Language { get; set; }
         public string Theme { get; set; }
+        public string? MercadoPagoAccessToken { get; set; }
+        public string? MercadoPagoUserId { get; set; }
 
         public ICollection<Comment> Comments { get; set; }
         public ICollection<UserHistorial> UserHistorials { get; set; }

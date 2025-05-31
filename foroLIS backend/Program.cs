@@ -9,6 +9,7 @@ using foroLIS_backend.Models;
 using foroLIS_backend.Repository;
 using foroLIS_backend.Services;
 using foroLIS_backend.Validators;
+using foroLIS_backend.Views;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
@@ -44,7 +45,7 @@ builder.Services.AddScoped<ISurveyService<SurveyDto, SurveyInsertDto, UserFieldS
 builder.Services.AddScoped<FileService>();
 builder.Services.AddMercadoPago(builder.Configuration);
 builder.Services.AddScoped<IPaymentService, PaymentService>();
-
+builder.Services.AddScoped<DonationService>();
 
 
 //validators
@@ -58,6 +59,8 @@ builder.Services.AddScoped<IValidator<IFormFile>,FileValidator>();
 builder.Services.AddScoped<IRepository<Post,PostDto>, PostRepository>();
 builder.Services.AddScoped<ISurveyRepository<Survey, FieldSurvey, UserFieldSurvey, FieldSurveyDto>, SurveyRepository>();
 builder.Services.AddScoped<IFileRepository<MediaFile>, FileRepository>();
+builder.Services.AddScoped<DonationRepository>();
+
 
 builder.Services.AddScoped<GoogleService>();
 builder.Services.AddHttpContextAccessor();
@@ -65,6 +68,8 @@ builder.Services.AddHttpClient<GoogleService>(c =>
 {
     c.BaseAddress = new Uri("https://www.googleapis.com/oauth2/v1/userinfo");
 });
+
+builder.Services.AddHttpClient();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -109,6 +114,9 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.ConfigureIdentity();
 builder.Services.ConfigureJwt(builder.Configuration);
 builder.Services.ConfigureCors();
+builder.Services.AddRazorComponents()
+    .AddInteractiveServerComponents();
+
 
 var app = builder.Build();
 
@@ -122,10 +130,19 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 
+app.UseRouting();
+app.UseAuthentication();
 app.UseAuthorization();
+app.UseAntiforgery();
+
+
+app.MapRazorComponents<App>()
+   .AddInteractiveServerRenderMode();
 
 app.MapControllers();
+
 
 app.UseStaticFiles(new StaticFileOptions
 {
