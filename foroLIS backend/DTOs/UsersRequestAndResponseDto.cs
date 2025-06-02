@@ -12,6 +12,17 @@ namespace foroLIS_backend.DTOs
         public string Theme { get; set; }
     }
 
+    public class UserRegisterRequestDto2
+    {
+        public string Email {  get; set; }
+        public string Password { get; set; }
+        public string UserName { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Language { get; set; }
+        public string Theme { get; set; }
+    }
+
     public class UserResponseDto
     {
         public string Id { get; set; }
@@ -40,6 +51,12 @@ namespace foroLIS_backend.DTOs
         public string? FamilyOS { get; set; }
         public string? VersionOS { get; set; }
 
+    }
+
+    public class UserLoginRequestDto2
+    {
+        public string Email { get; set; }
+        public string Password {  get; set; }
     }
 
     public class CurrentUserResponseDto

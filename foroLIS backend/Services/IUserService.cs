@@ -5,6 +5,7 @@ namespace foroLIS_backend.Services
     public interface IUserService
     {
         Task<UserResponseDto> RegisterAsync(UserRegisterRequestDto request, GoogleUserDto googleUser);
+        Task<UserResponseDto> RegisterAsync(UserRegisterRequestDto2 request);
         Task<CurrentUserResponseDto> GetCurrentUserAsync();
         Task<UserResponseDto> GoogleLoginAsync(UserRegisterRequestDto request);
         Task<UserResponseDto> GetByIdAsync(string id);
@@ -14,5 +15,6 @@ namespace foroLIS_backend.Services
         Task<CurrentUserResponseDto> RefreshTokenAsync(RefreshTokenRequestDto request);
 
         Task<UserResponseDto> LoginAsync(UserLoginRequestDto request);
+        Task<UserResponseDto> LoginAsync(UserLoginRequestDto2 request);
     }
 }
