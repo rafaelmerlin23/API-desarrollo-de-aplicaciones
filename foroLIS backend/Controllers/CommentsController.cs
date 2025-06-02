@@ -2,11 +2,15 @@
 using foroLIS_backend.DTOs.CommentDtos;
 using foroLIS_backend.Infrastructure.Context;
 using foroLIS_backend.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
+using System.Security.Claims;
+
 namespace foroLIS_backend.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class CommentsController : ControllerBase
@@ -18,6 +22,7 @@ namespace foroLIS_backend.Controllers
             _context = context;
         }
 
+        // GET: api/Comments
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CommentDto>>> GetComments()
         {
@@ -38,6 +43,7 @@ namespace foroLIS_backend.Controllers
             return Ok(comments);
         }
 
+        // GET: api/Comments/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<CommentDto>> GetComment(Guid id)
         {
@@ -62,9 +68,20 @@ namespace foroLIS_backend.Controllers
             return Ok(comment);
         }
 
+        // POST: api/Comments
         [HttpPost]
         public async Task<ActionResult<CommentDto>> CreateComment(CreateCommentDto dto)
         {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null)
+                return Unauthorized();
+
+            if (!await _context.Posts.AnyAsync(p => p.Id == dto.PostId))
+                return BadRequest("El PostId no existe.");
+
+            if (dto.MediaFileId.HasValue && !await _context.MediaFiles.AnyAsync(m => m.Id == dto.MediaFileId.Value))
+                return BadRequest("El MediaFileId no existe.");
+
             var comment = new Comment
             {
                 Id = Guid.NewGuid(),
@@ -72,7 +89,7 @@ namespace foroLIS_backend.Controllers
                 FamilyOS = dto.FamilyOS,
                 VersionOS = dto.VersionOS,
                 PostId = dto.PostId,
-                UserId = dto.UserId,
+                UserId = userId,
                 MediaFileId = dto.MediaFileId,
                 CreateAt = DateTime.UtcNow,
                 UpdateAt = DateTime.UtcNow
@@ -97,6 +114,7 @@ namespace foroLIS_backend.Controllers
             return CreatedAtAction(nameof(GetComment), new { id = comment.Id }, result);
         }
 
+        // PUT: api/Comments/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateComment(Guid id, UpdateCommentDto dto)
         {
@@ -108,7 +126,6 @@ namespace foroLIS_backend.Controllers
             comment.FamilyOS = dto.FamilyOS;
             comment.VersionOS = dto.VersionOS;
             comment.PostId = dto.PostId;
-            comment.UserId = dto.UserId;
             comment.MediaFileId = dto.MediaFileId;
             comment.UpdateAt = DateTime.UtcNow;
 
@@ -118,6 +135,7 @@ namespace foroLIS_backend.Controllers
             return NoContent();
         }
 
+        // DELETE: api/Comments/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteComment(Guid id)
         {
@@ -132,3 +150,4 @@ namespace foroLIS_backend.Controllers
         }
     }
 }
+
