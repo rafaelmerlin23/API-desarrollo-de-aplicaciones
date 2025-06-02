@@ -103,6 +103,8 @@ namespace foroLIS_backend.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
+        [Authorize]
         [HttpPost("upload")]
         [RequestSizeLimit(6 * 1024 * 1024)] 
         public async Task<ActionResult<FileUploadDto>> UploadFile( IFormFile file)

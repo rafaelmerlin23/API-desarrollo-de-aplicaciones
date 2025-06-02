@@ -70,6 +70,8 @@ namespace foroLIS_backend.Controllers
 
         // POST: api/Comments
         [HttpPost]
+        [Authorize]
+
         public async Task<ActionResult<CommentDto>> CreateComment(CreateCommentDto dto)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
