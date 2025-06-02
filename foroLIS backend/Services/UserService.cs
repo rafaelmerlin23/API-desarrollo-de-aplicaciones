@@ -251,5 +251,90 @@ namespace foroLIS_backend.Services
             await _userManager.UpdateAsync(user);
             return Users.UsersToUsersResponseDto(user);
         }
+
+        public async Task<UserResponseDto> RegisterAsync(UserRegisterRequestDto2 request)
+        {
+            _logger.LogInformation("Registering user");
+            var existingUser = await _userManager.FindByEmailAsync(request.Email);
+            if (existingUser != null)
+            {
+                _logger.LogError("Email already exists");
+                throw new Exception("Email already exists");
+            }
+
+            var newUser = new Users
+            {
+                Email = request.Email,
+                UserName = request.UserName,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                Language = request.Language,
+                Theme = request.Theme,
+                CreateAt = DateTime.Now,
+                UpdateAt = DateTime.Now,
+                Lastlogin = DateTime.Now
+
+            };
+
+            var result = await _userManager.CreateAsync(newUser, request.Password);
+            if (!result.Succeeded)
+            {
+                var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                _logger.LogError("Failed to create user: {errors}", errors);
+                throw new Exception($"Failed to create user: {errors}");
+            }
+
+            _logger.LogInformation("User created successfully");
+
+            var token = await _tokenService.GenerateToken(newUser);
+            var response = Users.UsersToUsersResponseDto(newUser);
+            return response;
+        }
+
+        public async Task<UserResponseDto> LoginAsync(UserLoginRequestDto2 request)
+        {
+            if (request == null)
+            {
+                _logger.LogError("Login request is null");
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            var user = await _userManager.FindByEmailAsync(request.Email);
+            if (user == null) 
+            {
+                _logger.LogError("Invalid email");
+                throw new Exception("Invalid email or password");
+            }
+
+            var isPasswordValid = await _userManager.CheckPasswordAsync(user, request.Password);
+            if (!isPasswordValid)
+            {
+                _logger.LogError("Invalid password");
+                throw new Exception("Invalid email or password");
+            }
+
+            var token = await _tokenService.GenerateToken(user);
+            var refreshToken = _tokenService.GenerateRefreshToken();
+
+            using var sha256 = SHA256.Create();
+            var refreshTokenHash = sha256.ComputeHash(Encoding.UTF8.GetBytes(refreshToken));
+            user.RefreshToken = Convert.ToBase64String(refreshTokenHash);
+            user.RefreshTokenExpiryTime = DateTime.Now.AddDays(2);
+            user.Lastlogin = DateTime.Now;
+
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+            {
+                var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                _logger.LogError("Failed to update user: {errors}", errors);
+                throw new Exception($"Failed to update user: {errors}");
+            }
+
+            var userResponse = Users.UsersToUsersResponseDto(user);
+            userResponse.AccessToken = token;
+            userResponse.RefreshToken = refreshToken;
+            return userResponse;
+        }
+
     }
 }

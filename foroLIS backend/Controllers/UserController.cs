@@ -26,6 +26,20 @@ namespace foroLIS_backend.Controllers
             _userValidator = userValidator;
         }
 
+        [HttpPost("register")]
+        public async Task<ActionResult> Register(UserRegisterRequestDto2 request)
+        {
+            var result = await _userService.RegisterAsync(request);
+            return Ok(result);
+        }
+
+        [HttpPost("login-final")]
+        public async Task<ActionResult> Login(UserLoginRequestDto2 request)
+        {
+            var result = await _userService.LoginAsync(request);
+            return Ok(result);
+        }
+
         [HttpGet("google-user")]
         public async Task<ActionResult<GoogleUserDto>> GetGoogleUser(string token)
         {
@@ -105,6 +119,8 @@ namespace foroLIS_backend.Controllers
                 return Conflict(ex.Message);
             }
         }
+
+
 
     }
 }
