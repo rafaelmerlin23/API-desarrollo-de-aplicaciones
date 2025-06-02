@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using foroLIS_backend.DTOs.CommunityMessagesDto;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace foroLIS_backend.Models
@@ -17,6 +19,17 @@ namespace foroLIS_backend.Models
         public string UserId { get; set; }
         [ForeignKey("UserId")]
         public virtual Users User { get; set; }
+
+        public CommunityMessageDto ToDto()
+        {
+            return new CommunityMessageDto
+            {
+                Fecha = this.Fecha,
+                Id = this.Id,
+                Texto = this.Texto,
+                UserId = this.UserId,
+            };
+        }
     }
 
 }

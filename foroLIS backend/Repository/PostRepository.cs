@@ -23,8 +23,8 @@ namespace foroLIS_backend.Repository
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task Add(Post post)=>
-            await _context.Posts.AddAsync(post);
+            public async Task Add(Post post)=>
+                await _context.Posts.AddAsync(post);
 
         public void Delete(Post entity)
         =>  _context.Posts.Remove(entity);
