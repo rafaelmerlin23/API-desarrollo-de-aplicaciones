@@ -150,6 +150,52 @@ namespace foroLIS_backend.Controllers
 
             return NoContent();
         }
+        // GET: api/Comments/ByPost/{postId}
+        [HttpGet("ByPost/{postId}")]
+        public async Task<ActionResult<IEnumerable<CommentDto>>> GetCommentsByPostId(Guid postId)
+        {
+            
+            if (!await _context.Posts.AnyAsync(p => p.Id == postId))
+            {
+                return NotFound(new { Message = $"No existe un post con ID {postId}" });
+            }
+
+            
+            var comments = await _context.Comments
+                .Where(c => c.PostId == postId)
+                .OrderByDescending(c => c.CreateAt)
+                .Select(c => new CommentDto
+                {
+                    Id = c.Id,
+                    ArchitectureOS = c.ArchitectureOS,
+                    FamilyOS = c.FamilyOS,
+                    VersionOS = c.VersionOS,
+                    PostId = c.PostId,
+                    UserId = c.UserId,
+                    MediaFileId = c.MediaFileId,
+                    CreateAt = c.CreateAt,
+                    UpdateAt = c.UpdateAt
+                })
+                .ToListAsync();
+
+            return Ok(comments);
+        }
+        // GET /api/Posts/Debug/ListIds
+        [HttpGet("Debug/ListIds")]
+        public async Task<IActionResult> GetPostIds()
+        {
+            var posts = await _context.Posts
+                .Select(p => new {
+                    p.Id,
+                    p.Title,
+                    Created = p.CreateAt.ToString("yyyy-MM-dd")
+                })
+                .OrderByDescending(p => p.Created)
+                .ToListAsync();
+
+            return Ok(posts);
+        }
+
     }
 }
 
