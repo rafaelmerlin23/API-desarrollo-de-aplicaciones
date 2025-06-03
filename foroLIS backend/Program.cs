@@ -124,13 +124,13 @@ builder.Services.ConfigureCors();
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-
+builder.WebHost.UseUrls("http://0.0.0.0:5094");
 var app = builder.Build();
 
 
 app.UseCors("CorsPolicy");
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
@@ -150,11 +150,23 @@ app.MapRazorComponents<App>()
 
 app.MapControllers();
 
+var uploadDir = Path.Combine(Directory.GetCurrentDirectory(), "FilesUploaded");
+
+if (!Directory.Exists(uploadDir))
+{
+    Directory.CreateDirectory(uploadDir);
+}
 
 app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(uploadDir),
+    RequestPath = "/files"
+});
+
+/*app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "FilesUploaded")),
     RequestPath = "/files"
 });
-
+*/
 app.Run();
