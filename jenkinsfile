@@ -1,0 +1,56 @@
+pipeline {
+    agent any    
+
+    environment {
+        IMAGE_NAME = 'financiaTe'
+        REGISTRY_URL = 'https://registry.hub.docker.com'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm      
+            }
+        }
+
+        stage('Build .NET') {
+            steps {
+                sh 'dotnet publish -c Release -o out'
+            }
+        }
+
+        stage('Build Docker image') {
+            steps {
+                script {
+                    COMMIT = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
+                    dockerImage = docker.build("${IMAGE_NAME}:${COMMIT}")
+                }
+            }
+        }
+
+        stage('Push to every collaborator') {
+            steps {
+                script {
+                    def collaborators = [
+                        [user: 'maizenauwu', creds: 'dockerhub-rafa'],
+                        [user: 'cheese400',   creds: 'dockerhub-alex']
+                        [user: 'luisdiaz7',   creds: 'dockerhub-luis']
+                    ]
+                    parallel collaborators.collectEntries { c ->
+                        ["push-${c.user}" : {
+                            docker.withRegistry(REGISTRY_URL, c.creds) {
+                                def remoteTag = "${c.user}/${IMAGE_NAME}:${COMMIT}"
+                                sh "docker tag ${IMAGE_NAME}:${COMMIT} ${remoteTag}"
+                                sh "docker push ${remoteTag}"
+                            }
+                        }]
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always { cleanWs() }  
+    }
+}
