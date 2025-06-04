@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         IMAGE_NAME   = 'financiate'
-        REGISTRY_URL = ''
+        REGISTRY_URL = 'docker.io'
     }
 
     stages {
