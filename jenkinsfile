@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                checkout scm
+                git url: 'https://github.com/rafaelmerlin23/API-desarrollo-de-aplicaciones', branch: 'main'
             }
         }
 
