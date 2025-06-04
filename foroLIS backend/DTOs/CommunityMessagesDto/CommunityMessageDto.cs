@@ -1,4 +1,5 @@
-﻿using foroLIS_backend.DTOs.CommunitySurveyDtos;
+﻿using foroLIS_backend.DTOs.CommunityMessagesCommentsDtos;
+using foroLIS_backend.DTOs.CommunitySurveyDtos;
 using foroLIS_backend.DTOs.FileDto;
 
 namespace foroLIS_backend.DTOs.CommunityMessagesDto
@@ -16,6 +17,7 @@ namespace foroLIS_backend.DTOs.CommunityMessagesDto
         public int? likes { get; set; }
         public bool? isLiked { get; set; }
         public List<LinksFile> files { get; set; }
+        public List<CommunityMessageCommentDto> comments { get; set; }
     }
 
 

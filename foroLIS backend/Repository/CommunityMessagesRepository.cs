@@ -1,4 +1,5 @@
 ﻿using foroLIS_backend.DTOs;
+using foroLIS_backend.DTOs.CommunityMessagesCommentsDtos;
 using foroLIS_backend.DTOs.CommunityMessagesDto;
 using foroLIS_backend.DTOs.CommunitySurveyDtos;
 using foroLIS_backend.DTOs.FileDto;
@@ -71,7 +72,7 @@ namespace foroLIS_backend.Repository
                .ThenInclude(p => p.User);
 
             var totalItems = await query.CountAsync();
-
+            
             var items = await query
              .OrderByDescending(cm => cm.Fecha)
              .Skip((page - 1) * pageSize)
@@ -84,6 +85,20 @@ namespace foroLIS_backend.Repository
                  UserId = cm.UserId,
                  UserName = cm.User.UserName,
                  isOwner = cm.Post.User.Id == user.Id,
+                comments = _context.CommunityMessageComments
+                .Where(cmm => cmm.CommunityMessageId == cm.Id)
+                .OrderBy(cmm => cmm.CreateAt) 
+                .Take(3)
+                .Select(cmm => new CommunityMessageCommentDto
+                {
+                    CommunityMessageId = cm.Id,
+                    CreateAt = cmm.CreateAt,
+                    Id = cmm.Id,
+                    Title = cmm.Title,
+                    UserId = cmm.UserId
+                })
+                .ToList(),
+
                  files = _context.CommunityMessageFiles
                      .Where(cf => cf.CommunityMessageId == cm.Id)
                      .Select(cf => new LinksFile
