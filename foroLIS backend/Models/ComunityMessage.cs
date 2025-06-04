@@ -20,6 +20,7 @@ namespace foroLIS_backend.Models
         [ForeignKey("UserId")]
         public virtual Users User { get; set; }
 
+        public virtual CommunitySurvey? Survey { get; set; }
         public CommunityMessageDto ToDto()
         {
             return new CommunityMessageDto

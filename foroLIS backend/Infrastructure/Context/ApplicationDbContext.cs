@@ -21,8 +21,12 @@ namespace foroLIS_backend.Infrastructure.Context
         public DbSet<FilePost> FilePosts { get; set; }
         public DbSet<Donation> Donations { get; set; }
         public DbSet<CommunityMessage> CommunityMessages { get; set; }
-
-        
+        public DbSet<CommunitySurvey> CommunitySurveys { get; set; }
+        public DbSet<CommunityFieldSurvey> CommunityFields { get; set; }
+        public DbSet<CommunityFieldsUser> CommunityUserFields {  get; set; }
+        public DbSet<CommunityLikes> CommunityLikes { get; set; }
+        public DbSet<CommunityMessageFile> CommunityMessageFiles { get; set; }
+        public DbSet<CommunityMessageComment> CommunityMessageComments { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             
@@ -108,10 +112,48 @@ namespace foroLIS_backend.Infrastructure.Context
                 .HasOne(m => m.Post)
                 .WithMany(p => p.CommunityMessages)
                 .HasForeignKey(m => m.PostId)
-                .OnDelete(DeleteBehavior.Restrict); 
+                .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<CommunityMessage>()
+                .HasOne(cm => cm.Survey)
+                .WithOne(cs => cs.CommunityMessage)
+                .HasForeignKey<CommunitySurvey>(cs => cs.Id);
+            builder.Entity<CommunitySurvey>()
+                .HasMany(s => s.Fields)
+                .WithOne(f => f.Survey)
+                .HasForeignKey(f => f.SurveyId);
 
+            builder.Entity<CommunityLikes>()
+                .HasKey(cl => new { cl.CommunityMessageId, cl.UserId });
+            builder.Entity<CommunityLikes>()
+                .HasOne(cl => cl.User)
+                .WithMany()
+                .HasForeignKey(cl => cl.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<CommunityLikes>()
+                .HasOne(cl => cl.CommunityMessage)
+                .WithMany()
+                .HasForeignKey(cl => cl.CommunityMessageId)
+                .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<CommunityFieldsUser>()
+                .HasKey(cf => new { cf.CommunityFieldId, cf.UserId });
+            builder.Entity<CommunityFieldsUser>()
+                .HasOne(cf => cf.CommunityFieldSurvey)
+                .WithMany()
+                .HasForeignKey(cf => cf.CommunityFieldId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<CommunityFieldsUser>()
+                .HasOne(cf => cf.User)
+                .WithMany(u => u.CommunityFieldSurveys)
+                .HasForeignKey(cf => cf.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<CommunityMessageComment>()
+                 .HasOne(c => c.CommunityMessage)
+                 .WithMany()
+                 .HasForeignKey(c => c.CommunityMessageId)
+                 .OnDelete(DeleteBehavior.Restrict);
 
             base.OnModelCreating(builder);
+
         }
     }
 }

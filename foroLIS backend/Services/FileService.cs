@@ -26,6 +26,57 @@ namespace foroLIS_backend.Services
             _httpContextAccessor = httpContextAccessor;
         }
 
+        public async Task DeleteFilesByCommunityMessageId(Guid communityMessageId)
+        {
+            var relations = await _fileRepository.GetCommunityMessageFilesByMessageId(communityMessageId);
+
+            foreach (var relation in relations)
+            {
+                var file = relation.MediaFile;
+                if (file == null) continue;
+
+                // Eliminar archivo original del disco
+                if (File.Exists(file.FilePath))
+                {
+                    File.Delete(file.FilePath);
+                }
+
+                // Eliminar archivo reducido (miniatura) si es imagen
+                var ext = Path.GetExtension(file.FilePath).ToLower();
+                var imageExts = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
+                if (imageExts.Contains(ext))
+                {
+                    var shortPath = Path.Combine(_route, "short_" + file.FileName);
+                    if (File.Exists(shortPath))
+                    {
+                        File.Delete(shortPath);
+                    }
+                }
+
+                // Eliminar relación y archivo de la base de datos
+                await _fileRepository.DeleteCommunityMessageFile(relation);
+                await _fileRepository.DeleteMediaFile(file);
+            }
+
+            await _fileRepository.Save();
+        }
+
+
+        public async Task<AddCommunityMessageFileDto> AddFileToCommunityMessage(AddCommunityMessageFileDto request)
+        {
+            var newFileCommunityMessage = new CommunityMessageFile
+            {
+                CommunityMessageId = request.CommunityMessageId,
+                FileId = request.MediaFileId
+            };
+            await _fileRepository.AddFileToCommunityMessage(newFileCommunityMessage);
+            return new AddCommunityMessageFileDto
+            {
+                MediaFileId = request.MediaFileId,
+                CommunityMessageId = request.CommunityMessageId,
+            };
+        }
+
         public async Task<FileUploadDto> UploadFile(IFormFile file)
         {
             if (!Directory.Exists(_route))
