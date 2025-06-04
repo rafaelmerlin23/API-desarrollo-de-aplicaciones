@@ -15,7 +15,7 @@ namespace foroLIS_backend.Repository
         Task<List<CommunityMessageFile>> GetCommunityMessageFilesByMessageId(Guid messageId);
         Task DeleteCommunityMessageFile(CommunityMessageFile relation);
         Task DeleteMediaFile(MediaFile file);
-
+        public Task<AddPostFileDto> AddFileToPost(FilePost cmf);
 
     }
 }

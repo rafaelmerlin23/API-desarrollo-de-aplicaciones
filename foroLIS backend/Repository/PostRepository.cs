@@ -1,4 +1,5 @@
 ﻿using foroLIS_backend.DTOs;
+using foroLIS_backend.DTOs.FileDto;
 using foroLIS_backend.DTOs.PostDtos;
 using foroLIS_backend.DTOs.SurveyDtos;
 using foroLIS_backend.Infrastructure.Context;
@@ -31,6 +32,7 @@ namespace foroLIS_backend.Repository
 
         public async Task<IEnumerable<PostDto>> Get(int page =1, int pageSize = 20)
         {
+            var baseUrl = _httpContextAccessor.HttpContext?.Request.Host.ToString();
             CurrentUserResponseDto user = null;
             if (_httpContextAccessor.HttpContext.Request.Headers.ContainsKey("Authorization"))
             {
@@ -58,6 +60,16 @@ namespace foroLIS_backend.Repository
                     UserId = post.UserId,
                     Content = post.Content,
                     Goal = post.Goal,
+                    files = _context.FilePosts
+                     .Where(cf => cf.PostId == post.Id)
+                     .Select(cf => new LinksFile
+                     {
+                         Original = $"{baseUrl}/files/{cf.MediaFile.FileName}",
+                         Short = cf.MediaFile.FileName.ToLower().EndsWith(".jpg") || cf.MediaFile.FileName.ToLower().EndsWith(".png") || cf.MediaFile.FileName.ToLower().EndsWith(".jpeg")
+                             ? $"{baseUrl}/files/short_{cf.MediaFile.FileName}"
+                             : null
+                     })
+                     .ToList(),
                     collected = _context.Donations.Where(d=> d.PostId == post.Id).Sum(d => d.Amount),
                     CreateAt = DateTime.Now,
                     FamilyOS = post.FamilyOS,

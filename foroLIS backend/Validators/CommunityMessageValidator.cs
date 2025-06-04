@@ -24,7 +24,7 @@ namespace foroLIS_backend.Validators
         private async Task<bool> isIntoCM(Guid postId, CancellationToken cancellationToken)
         {
             var user = await _userService.GetCurrentUserAsync();
-            bool isOwner = await _context.Posts.AnyAsync(p => p.User.Id == user.Id);
+            bool isOwner = await _context.Posts.AnyAsync(p => p.User.Id == user.Id && p.Id == postId);
             bool isMember = await _context.Donations.AnyAsync(don => don.Post.Id == postId && don.DonorId == user.Id);
             Console.WriteLine(isOwner? "es admin":"no es admin");
             Console.WriteLine(isMember ? "es miembro" : "no es miembro");

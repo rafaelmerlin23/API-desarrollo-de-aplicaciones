@@ -1,8 +1,0 @@
-﻿@page "/"
-<h1>Bienvenido</h1>
-
-<a href="@AuthUrl">Autorizar con Mercado Pago</a>
-
-@code {
-    private string AuthUrl => "https://auth.mercadopago.com.mx/authorization?response_type=code&client_id=7170872824024662&redirect_uri=https://localhost:7182/authorize&scope=offline_access&state=123abc";
-}

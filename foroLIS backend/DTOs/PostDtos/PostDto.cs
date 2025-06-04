@@ -1,4 +1,5 @@
-﻿using foroLIS_backend.DTOs.SurveyDtos;
+﻿using foroLIS_backend.DTOs.FileDto;
+using foroLIS_backend.DTOs.SurveyDtos;
 using foroLIS_backend.Models;
 
 namespace foroLIS_backend.DTOs.PostDtos
@@ -18,5 +19,6 @@ namespace foroLIS_backend.DTOs.PostDtos
         public DateTime CreateAt { get; set; }
         public DateTime? UpdateAt { get; set; }
         public SurveyDto? Survey { get; set; }
+        public List<LinksFile> files { get; set; }
     }
 }

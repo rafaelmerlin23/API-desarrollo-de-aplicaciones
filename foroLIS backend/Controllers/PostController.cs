@@ -15,6 +15,7 @@ namespace foroLIS_backend.Controllers
         ICommonService<PostDto, Guid, PostInsertDto, PostUpdateDto> _postService;
         IValidator<PostInsertDto> _postInsertValidator;
         IValidator<PostUpdateDto> _postUpdateValidator;
+        IValidator<AddPostFileDto> _addPostFileValidator;
         FileService _fileService;
         IValidator<IFormFile> _fileValidator;
         public PostController(
@@ -25,13 +26,15 @@ namespace foroLIS_backend.Controllers
             IValidator<PostUpdateDto> postUpdateValidator,
             FileService fileService
 ,
-            IValidator<IFormFile> fileValidator)
+            IValidator<IFormFile> fileValidator,
+            IValidator<AddPostFileDto> addPostFileValidator)
         {
             _postService = postService;
             _postInsertValidator = postInserValidator;
             _postUpdateValidator = postUpdateValidator;
             _fileService = fileService;
             _fileValidator = fileValidator;
+            _addPostFileValidator = addPostFileValidator;
         }
 
         [HttpGet("{id}")]
@@ -45,6 +48,26 @@ namespace foroLIS_backend.Controllers
                 return StatusCode(500, ex.Message);
             }
 
+        }
+        [Authorize]
+        [HttpPost("add-file")]
+        public async Task<ActionResult<AddPostFileDto>> AddFileToPost(AddPostFileDto request)
+        {
+            try
+            {
+                var validationResult = await _addPostFileValidator.ValidateAsync(request);
+                if (!validationResult.IsValid)
+                {
+                    return BadRequest(validationResult.Errors);
+                }
+
+                var response = await _fileService.AddFileToPost(request);
+                return response;
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         [HttpPost]
