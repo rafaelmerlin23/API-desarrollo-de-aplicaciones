@@ -1,10 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'mcr.microsoft.com/dotnet/sdk:8.0'
-            args  '-v /var/run/docker.sock:/var/run/docker.sock'
-        }
-    }
+    agent none
 
     environment {
         IMAGE_NAME   = 'financiate'
@@ -12,28 +7,34 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
+        stage('Checkout & Build .NET') {
+            agent {
+                docker {
+                    image 'mcr.microsoft.com/dotnet/sdk:8.0'
+                    args  '-v /var/run/docker.sock:/var/run/docker.sock'
+                }
+            }
             steps {
                 checkout scm
-            }
-        }
-
-        stage('Build .NET') {
-            steps {
                 sh 'dotnet publish -c Release -o out'
             }
         }
 
         stage('Build Docker image') {
+            agent { label 'docker' }
             steps {
                 script {
-                    COMMIT = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
-                    dockerImage = docker.build("${IMAGE_NAME}:${COMMIT}")
+                    env.COMMIT = sh(
+                        script: 'git rev-parse --short HEAD',
+                        returnStdout: true
+                    ).trim()
+                    docker.build("${IMAGE_NAME}:${env.COMMIT}")
                 }
             }
         }
 
         stage('Push to every collaborator') {
+            agent { label 'docker' }
             steps {
                 script {
                     def collaborators = [
@@ -45,8 +46,8 @@ pipeline {
                     def parallelPushes = collaborators.collectEntries { c ->
                         ["push-${c.user}": {
                             docker.withRegistry(REGISTRY_URL, c.creds) {
-                                def remoteTag = "${c.user}/${IMAGE_NAME}:${COMMIT}"
-                                sh "docker tag ${IMAGE_NAME}:${COMMIT} ${remoteTag}"
+                                def remoteTag = "${c.user}/${IMAGE_NAME}:${env.COMMIT}"
+                                sh "docker tag ${IMAGE_NAME}:${env.COMMIT} ${remoteTag}"
                                 sh "docker push ${remoteTag}"
                             }
                         }]
@@ -64,3 +65,4 @@ pipeline {
         }
     }
 }
+
