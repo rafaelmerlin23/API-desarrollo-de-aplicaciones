@@ -1,25 +1,24 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'mcr.microsoft.com/dotnet/sdk:8.0'
+            args  '-v /var/run/docker.sock:/var/run/docker.sock'
+        }
+    }
 
     environment {
         IMAGE_NAME   = 'financiate'
-        REGISTRY_URL = ''
+        REGISTRY_URL = '' // Docker Hub
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git url: 'https://github.com/rafaelmerlin23/API-desarrollo-de-aplicaciones', branch: 'main'
+                checkout scm
             }
         }
 
         stage('Build .NET') {
-            agent {
-                docker {
-                    image 'mcr.microsoft.com/dotnet/sdk:8.0'
-                    args  '-v /var/run/docker.sock:/var/run/docker.sock'
-                }
-            }
             steps {
                 sh 'dotnet publish -c Release -o out'
             }
@@ -28,8 +27,7 @@ pipeline {
         stage('Build Docker image') {
             steps {
                 script {
-                    COMMIT = sh(returnStdout: true,
-                                script: 'git rev-parse --short HEAD').trim()
+                    COMMIT = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
                     dockerImage = docker.build("${IMAGE_NAME}:${COMMIT}")
                 }
             }
@@ -43,7 +41,8 @@ pipeline {
                         [user: 'cheese400',  creds: 'dockerhub-alex'],
                         [user: 'luisdiaz7',  creds: 'dockerhub-luis']
                     ]
-                    parallel collaborators.collectEntries { c ->
+
+                    def parallelPushes = collaborators.collectEntries { c ->
                         ["push-${c.user}": {
                             docker.withRegistry(REGISTRY_URL, c.creds) {
                                 def remoteTag = "${c.user}/${IMAGE_NAME}:${COMMIT}"
@@ -52,6 +51,8 @@ pipeline {
                             }
                         }]
                     }
+
+                    parallel parallelPushes
                 }
             }
         }
@@ -63,4 +64,3 @@ pipeline {
         }
     }
 }
-
