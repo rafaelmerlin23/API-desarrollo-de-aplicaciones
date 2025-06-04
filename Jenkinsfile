@@ -2,7 +2,7 @@ pipeline {
     agent none
 
     environment {
-        IMAGE_NAME   = 'financiate'
+        IMAGE_NAME   = 'kickstarter_fake'
         REGISTRY_URL = 'https://index.docker.io/v1/'
     }
 
