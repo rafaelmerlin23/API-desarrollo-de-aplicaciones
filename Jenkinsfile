@@ -21,7 +21,7 @@ pipeline {
         }
 
         stage('Build Docker image') {
-            agent { label 'docker' }
+            agent any
             steps {
                 script {
                     env.COMMIT = sh(
@@ -34,7 +34,7 @@ pipeline {
         }
 
         stage('Push to every collaborator') {
-            agent { label 'docker' }
+            agent any
             steps {
                 script {
                     def collaborators = [
@@ -65,4 +65,3 @@ pipeline {
         }
     }
 }
-
