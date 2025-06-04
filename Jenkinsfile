@@ -40,7 +40,8 @@ pipeline {
                     def collaborators = [
                         [user: 'maizenauwu', creds: 'dockerhub-rafa'],
                         [user: 'cheese400',  creds: 'dockerhub-alex'],
-                        [user: 'luisdiaz7',  creds: 'dockerhub-luis']
+                        [user: 'luisdiaz7',  creds: 'dockerhub-luis'],
+                        [user: 'barlau45', creds: 'dockerhub-jorge']
                     ]
 
                     def parallelPushes = collaborators.collectEntries { c ->
@@ -61,7 +62,9 @@ pipeline {
 
     post {
         always {
-            cleanWs()
+            node {            // ← se añade contexto de nodo
+                cleanWs()    //    para que cleanWs() funcione con agent none
+            }
         }
     }
 }
