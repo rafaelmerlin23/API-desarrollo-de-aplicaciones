@@ -77,6 +77,18 @@ namespace foroLIS_backend.Services
             };
         }
 
+        public async Task<AddPostFileDto> AddFileToPost(AddPostFileDto request)
+        {
+            var newFileCommunityMessage = new FilePost
+            {
+               FileId = request.FileId,
+                PostId= request.PostId,
+            };
+            await _fileRepository.AddFileToPost(newFileCommunityMessage);
+            
+            return request;
+        }
+
         public async Task<FileUploadDto> UploadFile(IFormFile file)
         {
             if (!Directory.Exists(_route))

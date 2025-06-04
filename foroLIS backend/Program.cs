@@ -11,12 +11,14 @@ using foroLIS_backend.Models;
 using foroLIS_backend.Repository;
 using foroLIS_backend.Services;
 using foroLIS_backend.Validators;
-using foroLIS_backend.Views;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -62,6 +64,10 @@ builder.Services.AddScoped<IValidator<CommunityMessagePaginatedDto>, GetCommunit
 builder.Services.AddScoped<IValidator<UpdateCommunityMessageDto>, UpdateCommunityMessageValidator>();
 builder.Services.AddScoped<IValidator<DeleteCommunityMessageDto>,DeleteCommunityMessageValidator>();
 builder.Services.AddScoped<IValidator<OperationCommunityVoteDto>, OperationCommunityVoteValidator>();
+builder.Services.AddScoped<IValidator<CreateCommunitySurveyDto>,CreateSurveyValidator>();
+builder.Services.AddScoped<IValidator<AddCommunityMessageFileDto>,FIleCommunityMessageValidator>();
+builder.Services.AddScoped<IValidator<AddPostFileDto>, FIlePostValidator>();
+
 
 // repository
 builder.Services.AddScoped<IRepository<Post,PostDto>, PostRepository>();
@@ -147,8 +153,6 @@ app.UseAuthorization();
 app.UseAntiforgery();
 
 
-app.MapRazorComponents<App>()
-   .AddInteractiveServerRenderMode();
 
 app.MapControllers();
 

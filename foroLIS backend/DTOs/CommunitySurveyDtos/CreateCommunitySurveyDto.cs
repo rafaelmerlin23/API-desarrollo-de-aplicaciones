@@ -5,7 +5,7 @@
         public string Title { get; set; }
         public List<CreateCommunityFieldDto> Fields { get; set; }
         public bool AllowMoreOneAnswer { get; set; }
-        public DateTime? EndDate { get; set; }
+        public DateTime EndDate { get; set; } = DateTime.UtcNow.AddDays(1);
 
     }
 

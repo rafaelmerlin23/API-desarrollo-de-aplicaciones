@@ -25,6 +25,8 @@ namespace foroLIS_backend.Controllers
         private readonly IValidator<UpdateCommunityMessageDto> _updateCommunityMessageValidator;
         private readonly IValidator<DeleteCommunityMessageDto> _deleteCommunityMessageValidator;
         private readonly IValidator<OperationCommunityVoteDto> _operationCommunityVoteValidator;
+        private readonly IValidator<CreateCommunitySurveyDto> _createSurveyValidator;
+        private readonly IValidator<AddCommunityMessageFileDto> _communityMessageFileValidator;
         private readonly CommunitySurveyService _communitySurveyService;
         private readonly FileService _fileService;
 
@@ -37,7 +39,9 @@ namespace foroLIS_backend.Controllers
             IValidator<DeleteCommunityMessageDto> deleteCommunityMessageValidator,
             CommunitySurveyService communitySurveyService,
             IValidator<OperationCommunityVoteDto> operationCommunityVoteValidator,
-            FileService fileService) { 
+            FileService fileService,
+            IValidator<CreateCommunitySurveyDto> createSurveyValidator,
+            IValidator<AddCommunityMessageFileDto> communityMessageFileValidator) { 
             _cmService = cmService;
             _ccmValidator = ccmValidator;
             _getCcmValidator = getCcmValidator;
@@ -46,6 +50,8 @@ namespace foroLIS_backend.Controllers
             _communitySurveyService = communitySurveyService;
             _operationCommunityVoteValidator = operationCommunityVoteValidator;
             _fileService = fileService;
+            _createSurveyValidator = createSurveyValidator;
+            _communityMessageFileValidator = communityMessageFileValidator;
         }
 
         [Authorize]
@@ -92,6 +98,11 @@ namespace foroLIS_backend.Controllers
         {
             try
             {
+                var validationResult = await _communityMessageFileValidator.ValidateAsync(request);
+                if(!validationResult.IsValid)
+                {
+                    return BadRequest(validationResult.Errors); 
+                }
                 var response = await _fileService.AddFileToCommunityMessage(request);
                 return response;
             }catch(Exception ex)
@@ -149,6 +160,14 @@ namespace foroLIS_backend.Controllers
             try
             {
                 var validationResult = await _ccmValidator.ValidateAsync(request);
+                if( request.survey != null)
+                {
+                    var validationSurveyResult = await _createSurveyValidator.ValidateAsync(request.survey);
+                    if( !validationSurveyResult.IsValid)
+                    {
+                        return BadRequest(validationSurveyResult.Errors);
+                    } 
+                }
 
                 if (!validationResult.IsValid)
                 {

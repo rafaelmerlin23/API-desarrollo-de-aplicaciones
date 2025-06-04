@@ -29,6 +29,18 @@ namespace foroLIS_backend.Repository
             };
         }
 
+        public async Task<AddPostFileDto> AddFileToPost(FilePost cmf)
+        {
+            await _context.FilePosts.AddAsync(cmf);
+            await _context.SaveChangesAsync();
+            return new AddPostFileDto
+            {
+                PostId = cmf.PostId,
+                FileId = cmf.FileId
+                
+            };
+        }
+
         public async Task<List<CommunityMessageFile>> GetCommunityMessageFilesByMessageId(Guid messageId)
         {
             return await _context.CommunityMessageFiles
