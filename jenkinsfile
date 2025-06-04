@@ -8,7 +8,7 @@ pipeline {
 
     environment {
         IMAGE_NAME   = 'financiate'
-        REGISTRY_URL = '' // Docker Hub
+        REGISTRY_URL = ''
     }
 
     stages {
