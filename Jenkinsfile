@@ -62,8 +62,8 @@ pipeline {
 
     post {
         always {
-            node {            // ← se añade contexto de nodo
-                cleanWs()    //    para que cleanWs() funcione con agent none
+            node {           
+                cleanWs()    
             }
         }
     }
