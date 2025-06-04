@@ -92,7 +92,6 @@ namespace foroLIS_backend.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize]
         public async Task<ActionResult> GetById(string id)
         {
             try

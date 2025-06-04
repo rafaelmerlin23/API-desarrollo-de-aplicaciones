@@ -132,7 +132,6 @@ builder.Services.ConfigureCors();
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.WebHost.UseUrls("http://0.0.0.0:5094");
 var app = builder.Build();
 
 
