@@ -1,4 +1,5 @@
 ﻿using foroLIS_backend.DTOs;
+using foroLIS_backend.DTOs.CommunityMessagesCommentsDtos;
 using foroLIS_backend.DTOs.CommunityMessagesDto;
 using foroLIS_backend.DTOs.CommunitySurveyDtos;
 using foroLIS_backend.DTOs.FileDto;
@@ -94,6 +95,19 @@ namespace foroLIS_backend.Services
                 Texto = cm.Texto,
                 Fecha = cm.Fecha,
                 UserId = cm.UserId,
+                comments = _context.CommunityMessageComments
+                .Where(cmm => cmm.CommunityMessageId == cm.Id)
+                .OrderBy(cmm => cmm.CreateAt)
+                .Take(3)
+                .Select(cmm => new CommunityMessageCommentDto
+                {
+                    CommunityMessageId = cm.Id,
+                    CreateAt = cmm.CreateAt,
+                    Id = cmm.Id,
+                    Title = cmm.Title,
+                    UserId = cmm.UserId
+                })
+                .ToList(),
                 files = _context.CommunityMessageFiles
                      .Where(cf => cf.CommunityMessageId == cm.Id)
                      .Select(cf => new LinksFile

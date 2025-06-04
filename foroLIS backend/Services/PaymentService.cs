@@ -1,6 +1,7 @@
 ﻿namespace foroLIS_backend.Services;
 
 using DTOs;
+using foroLIS_backend.Infrastructure.Context;
 using foroLIS_backend.Models;
 using MercadoPago.Client.Payment;
 using MercadoPago.Config;
@@ -12,19 +13,22 @@ public class PaymentService : IPaymentService
     private readonly ICurrentUserService _currentUserService;
     private readonly UserManager<Users> _userManager;
     private readonly DonationService _donationService;
+    private readonly ApplicationDbContext _context;
     public PaymentService(
-         ICurrentUserService currentUserService
+         ICurrentUserService currentUserService,
+         ApplicationDbContext context
        , UserManager<Users> userManager,DonationService donationService)
     {
         this._currentUserService = currentUserService;
         this._userManager = userManager;
         _donationService = donationService;
+        _context = context;
     }
 
     public async Task<string> CreatePaymentAsync(CreatePaymentDTO dto)
     {
-        var receiver = await _userManager.FindByIdAsync(dto.ReceiverId);
-
+        var post = await _context.Posts.FindAsync(dto.PostId);
+        var receiver = await _userManager.FindByIdAsync(post.UserId);
         var currentUserId = _currentUserService.GetUserId();
         var donor = await _userManager.FindByIdAsync(currentUserId);
 
@@ -51,7 +55,7 @@ public class PaymentService : IPaymentService
                 PaymentMethodId = dto.PaymentMethodId,
                 Payer = new PaymentPayerRequest
                 {
-                    Email = donor.Email // Usamos el email del usuario autenticado
+                    Email = donor.Email 
                 }
             };
 
@@ -61,7 +65,7 @@ public class PaymentService : IPaymentService
             var donation = new Donation
             {
                 DonorId = donor.Id,
-                ReceiverId = dto.ReceiverId,
+                ReceiverId = post.UserId,
                 Amount = dto.Amount,
                 PaymentId = payment.Id.ToString(),
                 Status = payment.Status,
@@ -80,7 +84,7 @@ public class PaymentService : IPaymentService
             var donation = new Donation
             {
                 DonorId = donor.Id,
-                ReceiverId = dto.ReceiverId,
+                ReceiverId = post.UserId,
                 Amount = dto.Amount,
                 PaymentId = "1336825345",
                 Status = "approved",

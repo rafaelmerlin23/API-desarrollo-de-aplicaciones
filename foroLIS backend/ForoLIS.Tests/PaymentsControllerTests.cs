@@ -44,7 +44,8 @@ namespace ForoLIS.Tests
             );
 
             // Act
-            var result = await controller.CreatePayment(dto);
+            var dto2 = dto.toDTO2();
+            var result = await controller.CreatePayment(dto2);
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);

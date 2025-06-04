@@ -27,9 +27,10 @@ namespace foroLIS_backend.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> CreatePayment([FromBody] CreatePaymentDTO dto)
+        public async Task<IActionResult> CreatePayment([FromBody] CreatePaymentDTO2 dto)
         {
-            var result = await _paymentService.CreatePaymentAsync(dto);
+            var dto2 = dto.toDTO1();
+            var result = await _paymentService.CreatePaymentAsync(dto2);
             return Ok(new { status = result });
         }
 
