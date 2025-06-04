@@ -16,6 +16,8 @@ namespace foroLIS_backend.Services
 
         public Task<TDTO> Update(TU request);
 
+        public Task<UpdateLikeDto> LikeUnlike(Guid CommunityMessageId);
+
         public Task<CommunityMessageDto> Add(TI request);
         
     }

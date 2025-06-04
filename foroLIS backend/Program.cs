@@ -1,6 +1,7 @@
 using FluentValidation;
 using foroLIS_backend.DTOs;
 using foroLIS_backend.DTOs.CommunityMessagesDto;
+using foroLIS_backend.DTOs.CommunitySurveyDtos;
 using foroLIS_backend.DTOs.FileDto;
 using foroLIS_backend.DTOs.PostDtos;
 using foroLIS_backend.DTOs.SurveyDtos;
@@ -48,7 +49,7 @@ builder.Services.AddMercadoPago(builder.Configuration);
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<DonationService>();
 builder.Services.AddScoped<ICommunityMessageService<CommunityMessageDto, CreateCommunityMessagesDto, UpdateCommunityMessageDto, DeleteCommunityMessageDto>, CommunityMessageService>();
-
+builder.Services.AddScoped<CommunitySurveyService>();
 
 //validators
 builder.Services.AddScoped<IValidator<PostInsertDto>, PostInsertValidator>();
@@ -60,6 +61,7 @@ builder.Services.AddScoped <IValidator<CreateCommunityMessagesDto>, CommunityMes
 builder.Services.AddScoped<IValidator<CommunityMessagePaginatedDto>, GetCommunityMessageValidator>();
 builder.Services.AddScoped<IValidator<UpdateCommunityMessageDto>, UpdateCommunityMessageValidator>();
 builder.Services.AddScoped<IValidator<DeleteCommunityMessageDto>,DeleteCommunityMessageValidator>();
+builder.Services.AddScoped<IValidator<OperationCommunityVoteDto>, OperationCommunityVoteValidator>();
 
 // repository
 builder.Services.AddScoped<IRepository<Post,PostDto>, PostRepository>();
@@ -67,7 +69,7 @@ builder.Services.AddScoped<ISurveyRepository<Survey, FieldSurvey, UserFieldSurve
 builder.Services.AddScoped<IFileRepository<MediaFile>, FileRepository>();
 builder.Services.AddScoped<DonationRepository>();
 builder.Services.AddScoped<ICommunityMessagesRepository<CommunityMessage, CommunityMessageDto>, CommunityMessagesRepository>();
-
+builder.Services.AddScoped<ICommunitySurveyRepository,CommunitySurveyRepository>();
 
 builder.Services.AddScoped<GoogleService>();
 builder.Services.AddHttpContextAccessor();

@@ -23,5 +23,7 @@ namespace foroLIS_backend.Repository
 
         public  Task<T> GetById(Guid id);
 
+        public  Task<UpdateLikeDto> LikeUnlike(Guid CommunityMessageId);
+
     }
 }

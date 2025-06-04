@@ -31,6 +31,7 @@ namespace foroLIS_backend.Models
         public ICollection<Comment> Comments { get; set; }
         public ICollection<UserHistorial> UserHistorials { get; set; }
         public ICollection<Reaction> Reactions { get; set; }
+        public ICollection<CommunityFieldsUser> CommunityFieldSurveys { get; set; } = new List<CommunityFieldsUser>();
 
         public static CurrentUserResponseDto UserToCurrentUserResponseDto(Users user)
         {

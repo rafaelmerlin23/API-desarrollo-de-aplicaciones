@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using foroLIS_backend.Infrastructure.Context;
 
@@ -11,9 +12,11 @@ using foroLIS_backend.Infrastructure.Context;
 namespace foroLIS_backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250603180755_survey7")]
+    partial class survey7
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -200,7 +203,7 @@ namespace foroLIS_backend.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Comments", (string)null);
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("foroLIS_backend.Models.CommunityFieldSurvey", b =>
@@ -220,7 +223,7 @@ namespace foroLIS_backend.Migrations
 
                     b.HasIndex("SurveyId");
 
-                    b.ToTable("CommunityFields", (string)null);
+                    b.ToTable("CommunityFields");
                 });
 
             modelBuilder.Entity("foroLIS_backend.Models.CommunityFieldsUser", b =>
@@ -240,22 +243,7 @@ namespace foroLIS_backend.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("CommunityUserFields", (string)null);
-                });
-
-            modelBuilder.Entity("foroLIS_backend.Models.CommunityLikes", b =>
-                {
-                    b.Property<Guid>("CommunityMessageId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("CommunityMessageId", "UserId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("CommunityLikes", (string)null);
+                    b.ToTable("CommunityUserFields");
                 });
 
             modelBuilder.Entity("foroLIS_backend.Models.CommunityMessage", b =>
@@ -284,57 +272,7 @@ namespace foroLIS_backend.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("CommunityMessages", (string)null);
-                });
-
-            modelBuilder.Entity("foroLIS_backend.Models.CommunityMessageComment", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("CommunityMessageId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreateAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CommunityMessageId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("CommunityMessageComments", (string)null);
-                });
-
-            modelBuilder.Entity("foroLIS_backend.Models.CommunityMessageFile", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("CommunityMessageId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("FileId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CommunityMessageId");
-
-                    b.HasIndex("FileId");
-
-                    b.ToTable("CommunityMessageFiles", (string)null);
+                    b.ToTable("CommunityMessages");
                 });
 
             modelBuilder.Entity("foroLIS_backend.Models.CommunitySurvey", b =>
@@ -354,7 +292,7 @@ namespace foroLIS_backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CommunitySurveys", (string)null);
+                    b.ToTable("CommunitySurveys");
                 });
 
             modelBuilder.Entity("foroLIS_backend.Models.Donation", b =>
@@ -412,7 +350,7 @@ namespace foroLIS_backend.Migrations
 
                     b.HasIndex("ReceiverId");
 
-                    b.ToTable("Donations", (string)null);
+                    b.ToTable("Donations");
                 });
 
             modelBuilder.Entity("foroLIS_backend.Models.FieldSurvey", b =>
@@ -433,7 +371,7 @@ namespace foroLIS_backend.Migrations
 
                     b.HasIndex("SurveyId");
 
-                    b.ToTable("Fields", (string)null);
+                    b.ToTable("Fields");
                 });
 
             modelBuilder.Entity("foroLIS_backend.Models.FilePost", b =>
@@ -454,7 +392,7 @@ namespace foroLIS_backend.Migrations
 
                     b.HasIndex("PostId");
 
-                    b.ToTable("FilePosts", (string)null);
+                    b.ToTable("FilePosts");
                 });
 
             modelBuilder.Entity("foroLIS_backend.Models.MediaFile", b =>
@@ -478,7 +416,7 @@ namespace foroLIS_backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MediaFiles", (string)null);
+                    b.ToTable("MediaFiles");
                 });
 
             modelBuilder.Entity("foroLIS_backend.Models.Mention", b =>
@@ -505,7 +443,7 @@ namespace foroLIS_backend.Migrations
 
                     b.HasIndex("PostId");
 
-                    b.ToTable("Mentions", (string)null);
+                    b.ToTable("Mentions");
                 });
 
             modelBuilder.Entity("foroLIS_backend.Models.Post", b =>
@@ -556,7 +494,7 @@ namespace foroLIS_backend.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Posts", (string)null);
+                    b.ToTable("Posts");
                 });
 
             modelBuilder.Entity("foroLIS_backend.Models.Reaction", b =>
@@ -586,7 +524,7 @@ namespace foroLIS_backend.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Reactions", (string)null);
+                    b.ToTable("Reactions");
                 });
 
             modelBuilder.Entity("foroLIS_backend.Models.Survey", b =>
@@ -609,7 +547,7 @@ namespace foroLIS_backend.Migrations
                     b.HasIndex("PostId")
                         .IsUnique();
 
-                    b.ToTable("Surveys", (string)null);
+                    b.ToTable("Surveys");
                 });
 
             modelBuilder.Entity("foroLIS_backend.Models.UserFieldSurvey", b =>
@@ -626,7 +564,7 @@ namespace foroLIS_backend.Migrations
 
                     b.HasIndex("FieldSurveyId");
 
-                    b.ToTable("UsersFields", (string)null);
+                    b.ToTable("UsersFields");
                 });
 
             modelBuilder.Entity("foroLIS_backend.Models.UserHistorial", b =>
@@ -648,7 +586,7 @@ namespace foroLIS_backend.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserHistorials", (string)null);
+                    b.ToTable("UserHistorials");
                 });
 
             modelBuilder.Entity("foroLIS_backend.Models.Users", b =>
@@ -878,25 +816,6 @@ namespace foroLIS_backend.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("foroLIS_backend.Models.CommunityLikes", b =>
-                {
-                    b.HasOne("foroLIS_backend.Models.CommunityMessage", "CommunityMessage")
-                        .WithMany()
-                        .HasForeignKey("CommunityMessageId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("foroLIS_backend.Models.Users", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("CommunityMessage");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("foroLIS_backend.Models.CommunityMessage", b =>
                 {
                     b.HasOne("foroLIS_backend.Models.Post", "Post")
@@ -914,44 +833,6 @@ namespace foroLIS_backend.Migrations
                     b.Navigation("Post");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("foroLIS_backend.Models.CommunityMessageComment", b =>
-                {
-                    b.HasOne("foroLIS_backend.Models.CommunityMessage", "CommunityMessage")
-                        .WithMany()
-                        .HasForeignKey("CommunityMessageId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("foroLIS_backend.Models.Users", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CommunityMessage");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("foroLIS_backend.Models.CommunityMessageFile", b =>
-                {
-                    b.HasOne("foroLIS_backend.Models.CommunityMessage", "CommunityMessage")
-                        .WithMany()
-                        .HasForeignKey("CommunityMessageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("foroLIS_backend.Models.MediaFile", "MediaFile")
-                        .WithMany()
-                        .HasForeignKey("FileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CommunityMessage");
-
-                    b.Navigation("MediaFile");
                 });
 
             modelBuilder.Entity("foroLIS_backend.Models.CommunitySurvey", b =>
