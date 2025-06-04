@@ -2,7 +2,7 @@ pipeline {
     agent none
 
     environment {
-        IMAGE_NAME   = 'kickstarter_fake'
+        IMAGE_NAME   = 'punch_finisher'
         REGISTRY_URL = 'https://index.docker.io/v1/'
     }
 
@@ -41,7 +41,7 @@ pipeline {
                         [user: 'maizenauwu', creds: 'dockerhub-rafa'],
                         [user: 'cheese400',  creds: 'dockerhub-alex'],
                         [user: 'luisdiaz7',  creds: 'dockerhub-luis'],
-                        [user: 'barlau45', creds: 'dockerhub-jorge']
+                        [user: 'barlau45',  creds: 'dockerhub-jorge']
                     ]
 
                     def parallelPushes = collaborators.collectEntries { c ->
@@ -58,13 +58,16 @@ pipeline {
                 }
             }
         }
-    }
 
-    post {
-        always {
-            node {           
-                cleanWs()    
+        /*  ──► Limpieza de workspace  ◄──
+            Al ejecutarse en su propio agente, cleanWs()
+            ya tiene un contexto de nodo válido (sin label). */
+        stage('Cleanup workspace') {
+            agent any
+            steps {
+                cleanWs()
             }
         }
     }
 }
+
